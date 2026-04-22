@@ -1,4 +1,4 @@
-package patientFucntion;
+package patientFunction;
 
 import java.sql.*;
 import java.util.Scanner;

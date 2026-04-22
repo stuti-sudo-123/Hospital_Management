@@ -5,8 +5,11 @@ import java.util.Scanner;
 
 public class ManageAppointments {
 
-
     public static void viewAppointments(Connection conn, int patientId) {
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
             String query =
                 "SELECT a.appointment_id, a.status, a.booked_at, " +
@@ -18,10 +21,10 @@ public class ManageAppointments {
                 "WHERE a.patient_id = ? " +
                 "ORDER BY ds.slot_date DESC, ds.start_time DESC";
 
-            PreparedStatement ps = conn.prepareStatement(query);
+            ps = conn.prepareStatement(query);
             ps.setInt(1, patientId);
 
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             System.out.println("\n===== YOUR APPOINTMENTS =====");
 
@@ -43,32 +46,44 @@ public class ManageAppointments {
                 System.out.println("No appointments found.");
             }
 
+        } catch (SQLException e) {
+            System.out.println("Database Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                System.out.println("Closing Error: " + e.getMessage());
+            }
         }
     }
 
-
-
     public static void cancelAppointment(Connection conn, int patientId) {
+
         Scanner sc = new Scanner(System.in);
+
+        PreparedStatement psCheck = null;
+        PreparedStatement psCancel = null;
+        PreparedStatement psSlot = null;
+        ResultSet rs = null;
 
         try {
             System.out.print("Enter Appointment ID to cancel: ");
             int appointmentId = sc.nextInt();
 
-   
             String checkQuery =
                 "SELECT a.status, ds.slot_date, ds.start_time " +
                 "FROM appointments a " +
                 "JOIN doctor_slots ds ON a.slot_id = ds.slot_id " +
                 "WHERE a.appointment_id=? AND a.patient_id=?";
 
-            PreparedStatement psCheck = conn.prepareStatement(checkQuery);
+            psCheck = conn.prepareStatement(checkQuery);
             psCheck.setInt(1, appointmentId);
             psCheck.setInt(2, patientId);
 
-            ResultSet rs = psCheck.executeQuery();
+            rs = psCheck.executeQuery();
 
             if (!rs.next()) {
                 System.out.println("Invalid Appointment ID!");
@@ -77,7 +92,7 @@ public class ManageAppointments {
 
             String status = rs.getString("status");
 
-            if (status.equals("CANCELLED") || status.equals("COMPLETED")) {
+            if (status.equalsIgnoreCase("CANCELLED") || status.equalsIgnoreCase("COMPLETED")) {
                 System.out.println("Cannot cancel this appointment!");
                 return;
             }
@@ -95,15 +110,16 @@ public class ManageAppointments {
                 return;
             }
 
-            PreparedStatement psCancel = conn.prepareStatement(
+            // Cancel appointment
+            psCancel = conn.prepareStatement(
                 "UPDATE appointments SET status='CANCELLED', cancelled_at=NOW(), cancellation_reason=? WHERE appointment_id=?"
             );
             psCancel.setString(1, "Cancelled by patient");
             psCancel.setInt(2, appointmentId);
             psCancel.executeUpdate();
 
-        
-            PreparedStatement psSlot = conn.prepareStatement(
+            // Free slot
+            psSlot = conn.prepareStatement(
                 "UPDATE doctor_slots SET is_booked=0 WHERE slot_id=(SELECT slot_id FROM appointments WHERE appointment_id=?)"
             );
             psSlot.setInt(1, appointmentId);
@@ -111,8 +127,19 @@ public class ManageAppointments {
 
             System.out.println("Appointment cancelled successfully!");
 
+        } catch (SQLException e) {
+            System.out.println("Database Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (psCheck != null) psCheck.close();
+                if (psCancel != null) psCancel.close();
+                if (psSlot != null) psSlot.close();
+            } catch (SQLException e) {
+                System.out.println("Closing Error: " + e.getMessage());
+            }
         }
     }
 }

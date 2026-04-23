@@ -1,4 +1,4 @@
-package patientFucntion;
+package patientfucntion;
 
 import java.sql.*;
 

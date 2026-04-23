@@ -11,20 +11,27 @@ public class TestService {
         int patientId = sc.nextInt();
         sc.nextLine();
 
+        System.out.print("Enter Appointment ID: ");
+        int appointmentId = sc.nextInt();
+        sc.nextLine();
+
         System.out.print("Test Name: ");
         String testName = sc.nextLine();
 
         System.out.print("Notes: ");
         String notes = sc.nextLine();
 
+        // Insert into medical_tests
         PreparedStatement ps = conn.prepareStatement(
-            "INSERT INTO test_reports(patient_id, doctor_id, report_title, result_status, notes) VALUES (?,?,?,'PENDING',?)"
+            "INSERT INTO medical_tests(appointment_id, doctor_id, patient_id, test_name, test_description) VALUES (?,?,?,?,?)"
         );
-        ps.setInt(1, patientId);
+        ps.setInt(1, appointmentId);
         ps.setInt(2, doctorId);
-        ps.setString(3, testName);
-        ps.setString(4, notes);
+        ps.setInt(3, patientId);
+        ps.setString(4, testName);
+        ps.setString(5, notes);
         ps.executeUpdate();
+        ps.close();
 
         System.out.println("Test ordered! Admin will upload the result.");
     }

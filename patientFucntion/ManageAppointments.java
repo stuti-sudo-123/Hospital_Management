@@ -1,4 +1,4 @@
-package patientFucntion;
+package patientfucntion;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -72,6 +72,7 @@ public class ManageAppointments {
         try {
             System.out.print("Enter Appointment ID to cancel: ");
             int appointmentId = sc.nextInt();
+            sc.nextLine();
 
             String checkQuery =
                 "SELECT a.status, ds.slot_date, ds.start_time " +
@@ -97,16 +98,17 @@ public class ManageAppointments {
                 return;
             }
 
-            Date date = rs.getDate("slot_date");
-            Time time = rs.getTime("start_time");
+            // Show appointment details
+            System.out.println("Appointment Date : " + rs.getDate("slot_date"));
+            System.out.println("Appointment Time : " + rs.getTime("start_time"));
+            System.out.println("Status           : " + status);
 
-            Timestamp appointmentTime = Timestamp.valueOf(date + " " + time);
-            Timestamp now = new Timestamp(System.currentTimeMillis());
+            // Ask for confirmation
+            System.out.print("\nAre you sure you want to cancel? (yes/no): ");
+            String confirm = sc.nextLine().trim().toLowerCase();
 
-            long diffHours = (appointmentTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-            if (diffHours < 24) {
-                System.out.println("Cancellation not allowed within 24 hours!");
+            if (!confirm.equals("yes")) {
+                System.out.println("Cancellation aborted.");
                 return;
             }
 
@@ -142,4 +144,4 @@ public class ManageAppointments {
             }
         }
     }
-}
+   }

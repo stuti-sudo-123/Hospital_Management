@@ -17,10 +17,6 @@ public class ManageRecords {
         this.adminId = adminId;
     }
 
-    // =========================================================
-    //   1. MANAGE PATIENT & DOCTOR RECORDS  (4 marks)
-    // =========================================================
-
     public void viewAllPatients() {
         String sql = "SELECT * FROM vw_patient_full_profile";
         try (Statement st = con.createStatement();
@@ -47,7 +43,6 @@ public class ManageRecords {
         }
     }
 
-    /** View all doctor profiles using vw_doctor_details */
     public void viewAllDoctors() {
         String sql = "SELECT * FROM vw_doctor_details";
         try (Statement st = con.createStatement();
@@ -72,7 +67,6 @@ public class ManageRecords {
         }
     }
 
-    /** Update patient profile (contact number and blood group) */
     public void updatePatientProfile() {
         System.out.print("\nEnter Patient ID to update: ");
         int patientId = Integer.parseInt(sc.nextLine().trim());
@@ -112,7 +106,6 @@ public class ManageRecords {
         }
     }
 
-    /** Update doctor profile (qualification, experience, contact) */
     public void updateDoctorProfile() {
         System.out.print("\nEnter Doctor ID to update: ");
         int doctorId = Integer.parseInt(sc.nextLine().trim());
@@ -150,7 +143,6 @@ public class ManageRecords {
         }
     }
 
-    /** Remove a patient (cascades via FK) */
     public void removePatient() {
         System.out.print("\nEnter Patient ID to remove: ");
         int patientId = Integer.parseInt(sc.nextLine().trim());
@@ -171,7 +163,6 @@ public class ManageRecords {
         }
     }
 
-    /** Remove a doctor (cascades via FK) */
     public void removeDoctor() {
         System.out.print("\nEnter Doctor ID to remove: ");
         int doctorId = Integer.parseInt(sc.nextLine().trim());
@@ -192,7 +183,6 @@ public class ManageRecords {
         }
     }
 
-    /** Assign a doctor to a department / specialisation */
     public void assignDoctorToDepartment() {
         System.out.println("\n===== ASSIGN DOCTOR TO DEPARTMENT =====");
         viewAllDepartments();
@@ -215,7 +205,6 @@ public class ManageRecords {
         }
     }
 
-    /** Helper: list all departments */
     private void viewAllDepartments() {
         String sql = "SELECT department_id, name FROM departments ORDER BY department_id";
         try (Statement st = con.createStatement();
@@ -231,19 +220,70 @@ public class ManageRecords {
     }
 
     // =========================================================
-    //   2. UPLOAD TEST REPORTS  (4 marks)
+    //   UPLOAD TEST REPORT
     // =========================================================
 
-    /**
-     * Upload a test report for a given medical test.
-     * The admin provides all report details interactively.
-     */
+    private void showAvailableTestsWithoutReport() {
+        String sql =
+            "SELECT mt.test_id, u.full_name AS patient_name, mt.test_name, mt.ordered_at " +
+            "FROM medical_tests mt " +
+            "JOIN users u ON u.user_id = mt.patient_id " +
+            "WHERE mt.test_id NOT IN (SELECT test_id FROM test_reports) " +
+            "ORDER BY mt.test_id";
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            System.out.println("\n--- Pending Tests (No Report Yet) ---");
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                System.out.println("Test ID  : " + rs.getInt("test_id")
+                    + " | Patient : " + rs.getString("patient_name")
+                    + " | Test    : " + rs.getString("test_name")
+                    + " | Ordered : " + rs.getTimestamp("ordered_at"));
+            }
+            if (!found) System.out.println("No pending tests found.");
+            System.out.println("--------------------------------------");
+        } catch (SQLException e) {
+            System.out.println("Error fetching tests: " + e.getMessage());
+        }
+    }
+
+    private void showAllTestsWithReport() {
+        String sql =
+            "SELECT mt.test_id, u.full_name AS patient_name, mt.test_name, " +
+            "tr.report_title, tr.result_status " +
+            "FROM medical_tests mt " +
+            "JOIN users u ON u.user_id = mt.patient_id " +
+            "JOIN test_reports tr ON tr.test_id = mt.test_id " +
+            "ORDER BY mt.test_id";
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            System.out.println("\n--- Tests With Reports ---");
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                System.out.println("Test ID  : " + rs.getInt("test_id")
+                    + " | Patient : " + rs.getString("patient_name")
+                    + " | Test    : " + rs.getString("test_name")
+                    + " | Report  : " + rs.getString("report_title")
+                    + " | Result  : " + rs.getString("result_status"));
+            }
+            if (!found) System.out.println("No reports uploaded yet.");
+            System.out.println("--------------------------");
+        } catch (SQLException e) {
+            System.out.println("Error fetching reports: " + e.getMessage());
+        }
+    }
+
     public void uploadTestReport() {
         System.out.println("\n===== UPLOAD TEST REPORT =====");
+
+        // Show pending tests first
+        showAvailableTestsWithoutReport();
+
         System.out.print("Enter Test ID to upload report for: ");
         int testId = Integer.parseInt(sc.nextLine().trim());
 
-        // Verify test exists and is not already reported
         if (!testExists(testId)) {
             System.out.println("Test ID not found.");
             return;
@@ -262,7 +302,6 @@ public class ManageRecords {
         System.out.print("Overall Result Status (NORMAL/ABNORMAL/CRITICAL): ");
         String resultStatus = sc.nextLine().trim().toUpperCase();
 
-        // Findings (up to 4)
         String[] fLabel = new String[4], fValue = new String[4], fUnit = new String[4],
                  fRange = new String[4], fFlag = new String[4];
         for (int i = 0; i < 4; i++) {
@@ -306,7 +345,6 @@ public class ManageRecords {
             ps.setString(5, "UPLOADED");
             ps.setString(6, summary);
             ps.setString(7, resultStatus);
-            // Findings 1-4
             for (int i = 0; i < 4; i++) {
                 int base = 8 + (i * 5);
                 ps.setString(base,     fLabel[i]);
@@ -327,9 +365,13 @@ public class ManageRecords {
         }
     }
 
-    /** View a test report by test ID */
     public void viewTestReport() {
-        System.out.print("\nEnter Test ID to view report: ");
+        System.out.println("\n===== VIEW TEST REPORT =====");
+
+        // Show all tests with reports first
+        showAllTestsWithReport();
+
+        System.out.print("Enter Test ID to view report: ");
         int testId = Integer.parseInt(sc.nextLine().trim());
 
         String sql = "SELECT tr.*, mt.test_name FROM test_reports tr " +
@@ -372,7 +414,6 @@ public class ManageRecords {
         }
     }
 
-    // --- helpers ---
     private boolean testExists(int testId) {
         try (PreparedStatement ps = con.prepareStatement(
                 "SELECT 1 FROM medical_tests WHERE test_id = ?")) {
@@ -389,9 +430,6 @@ public class ManageRecords {
         } catch (SQLException e) { return false; }
     }
 
-    // =========================================================
-    //   MENU  (entry point used by admin session)
-    // =========================================================
     public void showMenu() {
         boolean running = true;
         while (running) {

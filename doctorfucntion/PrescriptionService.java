@@ -21,23 +21,39 @@ public class PrescriptionService {
         System.out.print("Dosage: ");
         String dosage = sc.nextLine();
 
-        System.out.print("Duration (days): ");
-        int days = sc.nextInt();
-        sc.nextLine();
+        System.out.print("Duration (e.g. 5 days, 2 weeks): ");
+        String duration = sc.nextLine();
 
-        System.out.print("Notes: ");
+        System.out.print("Instructions: ");
         String notes = sc.nextLine();
 
-        PreparedStatement ps = conn.prepareStatement(
-            "INSERT INTO prescriptions(appointment_id, patient_id, medicine_name, dosage, duration_days, notes) VALUES (?,?,?,?,?,?)"
+        // Insert into prescriptions first
+        PreparedStatement ps1 = conn.prepareStatement(
+            "INSERT INTO prescriptions(appointment_id, doctor_id, patient_id) VALUES (?,?,?)",
+            Statement.RETURN_GENERATED_KEYS
         );
-        ps.setInt(1, appointmentId);
-        ps.setInt(2, patientId);
-        ps.setString(3, medicine);
-        ps.setString(4, dosage);
-        ps.setInt(5, days);
-        ps.setString(6, notes);
-        ps.executeUpdate();
+        ps1.setInt(1, appointmentId);
+        ps1.setInt(2, doctorId);
+        ps1.setInt(3, patientId);
+        ps1.executeUpdate();
+
+        ResultSet keys = ps1.getGeneratedKeys();
+        keys.next();
+        int prescriptionId = keys.getInt(1);
+        keys.close();
+        ps1.close();
+
+        // Insert into prescription_medicines
+        PreparedStatement ps2 = conn.prepareStatement(
+            "INSERT INTO prescription_medicines(prescription_id, medicine_name, dosage, duration, instructions) VALUES (?,?,?,?,?)"
+        );
+        ps2.setInt(1, prescriptionId);
+        ps2.setString(2, medicine);
+        ps2.setString(3, dosage);
+        ps2.setString(4, duration);
+        ps2.setString(5, notes);
+        ps2.executeUpdate();
+        ps2.close();
 
         System.out.println("Prescription issued successfully!");
     }

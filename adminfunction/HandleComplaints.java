@@ -1,7 +1,6 @@
 package adminfunction;
 
 import connection.DBConnection;
-
 import java.sql.*;
 import java.util.Scanner;
 

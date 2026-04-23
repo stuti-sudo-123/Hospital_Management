@@ -1,4 +1,4 @@
-package patientFucntion;
+package patientfucntion;
 
 import java.sql.*;
 
@@ -44,7 +44,7 @@ public class MedicalRecords {
             }
         }
     }
-
+ 
     public static void viewReports(Connection conn, int patientId) {
 
         PreparedStatement ps = null;

@@ -1,13 +1,13 @@
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
--- Host: localhost    Database: hospital_management
+-- Host: localhost    Database: hospital
 -- ------------------------------------------------------
 -- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -65,7 +65,7 @@ CREATE TABLE `appointments` (
   CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`) ON DELETE CASCADE,
   CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`) ON DELETE CASCADE,
   CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`slot_id`) REFERENCES `doctor_slots` (`slot_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +103,7 @@ CREATE TABLE `billing` (
   CONSTRAINT `billing_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`) ON DELETE CASCADE,
   CONSTRAINT `billing_ibfk_2` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`appointment_id`) ON DELETE SET NULL,
   CONSTRAINT `billing_ibfk_3` FOREIGN KEY (`generated_by`) REFERENCES `administrators` (`admin_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +112,7 @@ CREATE TABLE `billing` (
 
 LOCK TABLES `billing` WRITE;
 /*!40000 ALTER TABLE `billing` DISABLE KEYS */;
-INSERT INTO `billing` (`bill_id`, `patient_id`, `appointment_id`, `consultation_fee`, `medicine_cost`, `test_cost`, `payment_status`, `generated_by`, `generated_at`) VALUES (1,4,1,500.00,350.00,800.00,'PAID',1,'2026-04-19 11:01:23'),(2,5,2,500.00,0.00,0.00,'WAIVED',1,'2026-04-19 11:01:23'),(3,6,3,500.00,0.00,0.00,'PENDING',1,'2026-04-19 11:01:23');
+INSERT INTO `billing` (`bill_id`, `patient_id`, `appointment_id`, `consultation_fee`, `medicine_cost`, `test_cost`, `payment_status`, `generated_by`, `generated_at`) VALUES (1,4,1,500.00,350.00,800.00,'PAID',1,'2026-04-19 11:01:23'),(2,5,2,500.00,0.00,0.00,'PAID',1,'2026-04-19 11:01:23'),(3,6,3,500.00,0.00,0.00,'WAIVED',1,'2026-04-19 11:01:23'),(4,6,3,500.00,1000.00,2000.00,'PENDING',1,'2026-04-23 12:18:15');
 /*!40000 ALTER TABLE `billing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,7 +223,7 @@ CREATE TABLE `doctor_slots` (
   PRIMARY KEY (`slot_id`),
   UNIQUE KEY `doctor_id` (`doctor_id`,`slot_date`,`start_time`),
   CONSTRAINT `doctor_slots_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +232,7 @@ CREATE TABLE `doctor_slots` (
 
 LOCK TABLES `doctor_slots` WRITE;
 /*!40000 ALTER TABLE `doctor_slots` DISABLE KEYS */;
-INSERT INTO `doctor_slots` VALUES (1,2,'2025-07-10','09:00:00','09:30:00',1),(2,2,'2025-07-10','09:30:00','10:00:00',1),(3,2,'2025-07-10','10:00:00','10:30:00',0),(4,2,'2025-07-11','09:00:00','09:30:00',0),(5,2,'2025-07-11','09:30:00','10:00:00',0),(6,2,'2025-07-12','11:00:00','11:30:00',1),(7,3,'2025-07-10','14:00:00','14:30:00',0),(8,3,'2025-07-10','14:30:00','15:00:00',0),(9,3,'2025-07-11','10:00:00','10:30:00',0),(10,3,'2025-07-12','15:00:00','15:30:00',0);
+INSERT INTO `doctor_slots` VALUES (1,2,'2025-07-10','09:00:00','09:30:00',1),(2,2,'2025-07-10','09:30:00','10:00:00',1),(3,2,'2025-07-10','10:00:00','10:30:00',0),(5,2,'2025-07-11','09:30:00','10:00:00',0),(6,2,'2025-07-12','11:00:00','11:30:00',1),(7,3,'2025-07-10','14:00:00','14:30:00',0),(8,3,'2025-07-10','14:30:00','15:00:00',0),(9,3,'2025-07-11','10:00:00','10:30:00',0),(10,3,'2025-07-12','15:00:00','15:30:00',0),(11,2,'2025-07-10','10:30:00','11:30:00',0);
 /*!40000 ALTER TABLE `doctor_slots` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -262,7 +262,7 @@ CREATE TABLE `doctors` (
 
 LOCK TABLES `doctors` WRITE;
 /*!40000 ALTER TABLE `doctors` DISABLE KEYS */;
-INSERT INTO `doctors` VALUES (2,1,'MD Cardiology, AIIMS Delhi',12,'9876500001'),(3,2,'DM Neurology, PGI Chandigarh',8,'9876500002');
+INSERT INTO `doctors` VALUES (2,1,'MD Cardiology, AIIMS Delhi',12,'9876500001'),(3,2,'DM Neurology, PGI Chandigarh',8,'9876500002'),(8,6,'MBBS, MD General Medicine',10,'9876541111'),(9,9,'MBBS, MD Psychiatry',8,'9876542222'),(10,10,'MBBS, MD Pulmonology',12,'9876543333'),(11,7,'MBBS, MS ENT',6,'9876544444'),(12,4,'MBBS, MD Dermatology',7,'9876545555'),(13,3,'MBBS, MS Orthopedics',9,'9876546666'),(14,8,'MBBS, MD Gastroenterology',11,'9876547777');
 /*!40000 ALTER TABLE `doctors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,7 +360,7 @@ CREATE TABLE `medical_tests` (
   CONSTRAINT `medical_tests_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`appointment_id`) ON DELETE CASCADE,
   CONSTRAINT `medical_tests_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`) ON DELETE CASCADE,
   CONSTRAINT `medical_tests_ibfk_3` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -369,7 +369,7 @@ CREATE TABLE `medical_tests` (
 
 LOCK TABLES `medical_tests` WRITE;
 /*!40000 ALTER TABLE `medical_tests` DISABLE KEYS */;
-INSERT INTO `medical_tests` VALUES (1,1,2,4,'Lipid Profile','Complete lipid panel: Total Cholesterol, LDL, HDL, Triglycerides','2026-04-19 11:01:21'),(2,1,2,4,'ECG (Electrocardiogram)','Resting 12-lead ECG to assess cardiac rhythm and conduction','2026-04-19 11:01:21');
+INSERT INTO `medical_tests` VALUES (1,1,2,4,'Lipid Profile','Complete lipid panel: Total Cholesterol, LDL, HDL, Triglycerides','2026-04-19 11:01:21'),(2,1,2,4,'ECG (Electrocardiogram)','Resting 12-lead ECG to assess cardiac rhythm and conduction','2026-04-19 11:01:21'),(3,3,2,6,'iodie test','nothing','2026-04-23 12:00:19');
 /*!40000 ALTER TABLE `medical_tests` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,7 +389,7 @@ CREATE TABLE `patient_medical_background` (
   PRIMARY KEY (`background_id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `patient_medical_background_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +398,7 @@ CREATE TABLE `patient_medical_background` (
 
 LOCK TABLES `patient_medical_background` WRITE;
 /*!40000 ALTER TABLE `patient_medical_background` DISABLE KEYS */;
-INSERT INTO `patient_medical_background` VALUES (1,4,'Appendectomy (2019)','Metformin 500mg (pre-diabetic condition)','Penicillin ? causes rash'),(2,5,'None','None','Sulfa drugs ? causes hives; Peanuts ? anaphylaxis'),(3,6,'Tonsillectomy (2015)','Levothyroxine 50mcg (hypothyroidism)','None known');
+INSERT INTO `patient_medical_background` VALUES (1,4,'Appendectomy (2019)','Metformin 500mg (pre-diabetic condition)','Penicillin ? causes rash'),(2,5,'None','None','Sulfa drugs ? causes hives; Peanuts ? anaphylaxis'),(3,6,'Tonsillectomy (2015)','Levothyroxine 50mcg (hypothyroidism)','None known'),(4,7,'no','no','no');
 /*!40000 ALTER TABLE `patient_medical_background` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -425,7 +425,7 @@ CREATE TABLE `patients` (
 
 LOCK TABLES `patients` WRITE;
 /*!40000 ALTER TABLE `patients` DISABLE KEYS */;
-INSERT INTO `patients` VALUES (4,'1998-04-15','9876541001','B+'),(5,'2001-09-22','9876541002','O+'),(6,'2000-07-10','9876541003','A+');
+INSERT INTO `patients` VALUES (4,'1998-04-15','9876541001','B+'),(5,'2001-09-22','9876541002','O+'),(6,'2000-07-10','9876541003','A+'),(7,'2008-02-23','9000666179','A+');
 /*!40000 ALTER TABLE `patients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,7 +446,7 @@ CREATE TABLE `prescription_medicines` (
   PRIMARY KEY (`med_id`),
   KEY `prescription_id` (`prescription_id`),
   CONSTRAINT `prescription_medicines_ibfk_1` FOREIGN KEY (`prescription_id`) REFERENCES `prescriptions` (`prescription_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,7 +455,7 @@ CREATE TABLE `prescription_medicines` (
 
 LOCK TABLES `prescription_medicines` WRITE;
 /*!40000 ALTER TABLE `prescription_medicines` DISABLE KEYS */;
-INSERT INTO `prescription_medicines` VALUES (1,1,'Aspirin','75 mg','30 days','Once daily after breakfast'),(2,1,'Atorvastatin','10 mg','30 days','Once daily at bedtime'),(3,1,'Metoprolol','25 mg','14 days','Twice daily ? morning and evening');
+INSERT INTO `prescription_medicines` VALUES (1,1,'Aspirin','75 mg','30 days','Once daily after breakfast'),(2,1,'Atorvastatin','10 mg','30 days','Once daily at bedtime'),(3,1,'Metoprolol','25 mg','14 days','Twice daily ? morning and evening'),(4,2,'iodine tablets','200mg','2 days','eat empty stomach in morning');
 /*!40000 ALTER TABLE `prescription_medicines` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -479,7 +479,7 @@ CREATE TABLE `prescriptions` (
   CONSTRAINT `prescriptions_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`appointment_id`) ON DELETE CASCADE,
   CONSTRAINT `prescriptions_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`) ON DELETE CASCADE,
   CONSTRAINT `prescriptions_ibfk_3` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -488,7 +488,7 @@ CREATE TABLE `prescriptions` (
 
 LOCK TABLES `prescriptions` WRITE;
 /*!40000 ALTER TABLE `prescriptions` DISABLE KEYS */;
-INSERT INTO `prescriptions` VALUES (1,1,2,4,'2026-04-19 11:01:21');
+INSERT INTO `prescriptions` VALUES (1,1,2,4,'2026-04-19 11:01:21'),(2,3,2,6,'2026-04-23 11:54:38');
 /*!40000 ALTER TABLE `prescriptions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -594,7 +594,7 @@ CREATE TABLE `test_reports` (
   KEY `uploaded_by` (`uploaded_by`),
   CONSTRAINT `test_reports_ibfk_1` FOREIGN KEY (`test_id`) REFERENCES `medical_tests` (`test_id`) ON DELETE CASCADE,
   CONSTRAINT `test_reports_ibfk_2` FOREIGN KEY (`uploaded_by`) REFERENCES `administrators` (`admin_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -603,7 +603,7 @@ CREATE TABLE `test_reports` (
 
 LOCK TABLES `test_reports` WRITE;
 /*!40000 ALTER TABLE `test_reports` DISABLE KEYS */;
-INSERT INTO `test_reports` VALUES (1,1,1,'RPT-2025-001','Lipid Profile Report','REVIEWED','Borderline dyslipidemia detected. Low HDL and elevated LDL noted.','ABNORMAL','Total Cholesterol','198','mg/dL','< 200 mg/dL','NORMAL','LDL Cholesterol','125','mg/dL','< 100 mg/dL','HIGH','HDL Cholesterol','45','mg/dL','> 60 mg/dL','LOW','Triglycerides','165','mg/dL','< 150 mg/dL','HIGH','Diet modification advised. Reduce saturated fats and increase physical activity. Follow-up lipid panel in 3 months.','Hospital Central Lab','Mr. Ramesh Joshi','2025-07-10 07:30:00','2025-07-10 11:00:00','2026-04-19 11:08:14'),(2,2,1,'RPT-2025-002','ECG (Electrocardiogram) Report','REVIEWED','Normal resting ECG. No acute ischaemic changes detected.','NORMAL','Heart Rate','78','bpm','60?100 bpm','NORMAL','PR Interval','160','ms','120?200 ms','NORMAL','QRS Duration','90','ms','80?120 ms','NORMAL','QT Interval','380','ms','350?440 ms','NORMAL','Normal sinus rhythm. No ST elevation or depression. No T-wave abnormalities. Routine follow-up advised.','Hospital Cardiology Lab','Ms. Kavita Rao','2025-07-10 08:00:00','2025-07-10 10:30:00','2026-04-19 11:08:14');
+INSERT INTO `test_reports` VALUES (1,1,1,'RPT-2025-001','Lipid Profile Report','REVIEWED','Borderline dyslipidemia detected. Low HDL and elevated LDL noted.','ABNORMAL','Total Cholesterol','198','mg/dL','< 200 mg/dL','NORMAL','LDL Cholesterol','125','mg/dL','< 100 mg/dL','HIGH','HDL Cholesterol','45','mg/dL','> 60 mg/dL','LOW','Triglycerides','165','mg/dL','< 150 mg/dL','HIGH','Diet modification advised. Reduce saturated fats and increase physical activity. Follow-up lipid panel in 3 months.','Hospital Central Lab','Mr. Ramesh Joshi','2025-07-10 07:30:00','2025-07-10 11:00:00','2026-04-19 11:08:14'),(2,2,1,'RPT-2025-002','ECG (Electrocardiogram) Report','REVIEWED','Normal resting ECG. No acute ischaemic changes detected.','NORMAL','Heart Rate','78','bpm','60?100 bpm','NORMAL','PR Interval','160','ms','120?200 ms','NORMAL','QRS Duration','90','ms','80?120 ms','NORMAL','QT Interval','380','ms','350?440 ms','NORMAL','Normal sinus rhythm. No ST elevation or depression. No T-wave abnormalities. Routine follow-up advised.','Hospital Cardiology Lab','Ms. Kavita Rao','2025-07-10 08:00:00','2025-07-10 10:30:00','2026-04-19 11:08:14'),(3,3,1,'RPT-2025-010','iodie teasts','UPLOADED','your thyroid icresed','ABNORMAL',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'take medicatios on time','Hospital Central Lab','stuti','2025-06-29 10:30:00','2026-04-23 12:16:07','2026-04-23 12:16:07');
 /*!40000 ALTER TABLE `test_reports` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -623,7 +623,7 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -632,7 +632,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Admin User','admin@hospital.com','Admin@1234','ADMIN','2026-04-19 11:01:21'),(2,'Dr. Anil Mehta','anil.mehta@hospital.com','Doc@1234','DOCTOR','2026-04-19 11:01:21'),(3,'Dr. Priya Sharma','priya.sharma@hospital.com','Doc@5678','DOCTOR','2026-04-19 11:01:21'),(4,'Rahul Patel','rahul.patel@gmail.com','Pat@1234','PATIENT','2026-04-19 11:01:21'),(5,'Sneha Desai','sneha.desai@gmail.com','Pat@5678','PATIENT','2026-04-19 11:01:21'),(6,'Kiran Shah','kiran.shah@gmail.com','Pat@9012','MEDICAL_INTERN','2026-04-19 11:01:21');
+INSERT INTO `users` VALUES (1,'Admin User','admin@hospital.com','Admin@1234','ADMIN','2026-04-19 11:01:21'),(2,'Dr. Anil Mehta','anil.mehta@hospital.com','Doc@1234','DOCTOR','2026-04-19 11:01:21'),(3,'Dr. Priya Sharma','priya.sharma@hospital.com','Doc@5678','DOCTOR','2026-04-19 11:01:21'),(4,'Rahul Patel','rahul.patel@gmail.com','Pat@1234','PATIENT','2026-04-19 11:01:21'),(5,'Sneha Desai','sneha.desai@gmail.com','Pat@5678','PATIENT','2026-04-19 11:01:21'),(6,'Kiran Shah','kiran.shah@gmail.com','Pat@9012','MEDICAL_INTERN','2026-04-19 11:01:21'),(7,'Ammu','Ammu651@gmail.com','1234','PATIENT','2026-04-23 11:11:25'),(8,'Dr. Rahul Mehta','rahul@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00'),(9,'Dr. Neha Verma','neha@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00'),(10,'Dr. Anil Joshi','anil@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00'),(11,'Dr. Sonal Patel','sonal@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00'),(12,'Dr. Kavya Nair','kavya@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00'),(13,'Dr. Ravi Kumar','ravi@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00'),(14,'Dr. Meena Shah','meena@hospital.com','pass123','DOCTOR','2026-04-23 11:27:00');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -865,4 +865,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-19 11:14:19
+-- Dump completed on 2026-04-23 12:25:00
